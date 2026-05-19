@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About | MH / LAB" description="Exploring the frontiers of engineering, systems, and security.">
+	<section class="about-container">
+		<header>
+			<h1>Engineering & Exploration</h1>
+		</header>
+
+		<div class="bio">
+			<p>
+				Welcome to <b>MH / LAB</b>. I'm MingHieu, a software engineer with a passion for understanding how complex systems work—and how to make them better.
+			</p>
+			<p>
+				My philosophy is simple: <b>Stay curious and keep breaking things.</b> I believe the best way to learn is to dive deep, take things apart, and share those insights with the engineering community.
+			</p>
+		</div>
+
+		<div class="contact">
+			<h2>Collaborate or Say Hi</h2>
+			<p>
+				Always open to discussing systems architecture, security research, or new tech experiments.
+			</p>
+			<a href="mailto:hieulm0612@gmail.com" class="email-link">
+				hieulm0612@gmail.com
+			</a>
+		</div>
+
+		<div class="quote-section">
+			<blockquote>
+				"The art of engineering is a continuous process of learning from failures."
+			</blockquote>
+			<cite>— MH / LAB Philosophy</cite>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.about-container {
+		padding: 4rem 0;
+		max-width: 650px;
+		margin: 0 auto;
+	}
+
+	header h1 {
+		font-size: 3.5rem;
+		margin-bottom: 3rem;
+	}
+
+	.bio p {
+		margin-bottom: 2rem;
+		font-size: 1.25rem;
+		line-height: 1.8;
+	}
+
+	.contact {
+		margin: 6rem 0;
+		padding: 3rem;
+		background: var(--code-bg);
+		border-radius: 2rem;
+		border: 1px solid var(--border-color);
+	}
+
+	.contact h2 {
+		margin-top: 0;
+		font-size: 1.8rem;
+		margin-bottom: 1rem;
+	}
+
+	.email-link {
+		display: inline-block;
+		margin-top: 1rem;
+		font-size: 1.3rem;
+		font-weight: 700;
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+		transition: border-color 0.2s;
+	}
+
+	.email-link:hover {
+		border-bottom-color: var(--accent);
+	}
+
+	.quote-section {
+		margin-top: 8rem;
+		text-align: center;
+	}
+
+	blockquote {
+		border: none;
+		background: none;
+		padding: 0;
+		margin: 0 0 1rem;
+		font-size: 2rem;
+		font-family: 'Quicksand', sans-serif;
+		font-weight: 700;
+		font-style: italic;
+		line-height: 1.3;
+	}
+
+	cite {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.9rem;
+		color: var(--text-dim);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	@media (max-width: 768px) {
+		header h1 { font-size: 2.5rem; }
+		.contact { padding: 2rem; }
+		blockquote { font-size: 1.5rem; }
+	}
+</style>
