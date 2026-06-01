@@ -28,18 +28,64 @@ const seriesTitle = mobileId
 	.split('-')
 	.map(word => word.charAt(0).toUpperCase() + word.slice(1))
 	.join(' ');
+
+const otherPosts = Object.values(
+	allChapters.reduce((acc, chapter) => {
+		const parts = chapter.id.split('/');
+		if (parts.length < 2) return acc;
+		const postId = parts[0];
+		if (postId === mobileId) return acc;
+		
+		if (!acc[postId]) {
+			acc[postId] = {
+				id: postId,
+				chapters: [],
+				category: chapter.data.category || 'other'
+			};
+		}
+		acc[postId].chapters.push(chapter);
+		return acc;
+	}, {} as Record<string, { id: string; chapters: typeof allChapters; category: string }>)
+).map(post => {
+	post.chapters.sort((a, b) => a.data.order - b.data.order);
+	const firstChapter = post.chapters[0];
+	const isSeries = post.chapters.length > 1;
+	const displayTitle = isSeries
+		? post.id
+			.split('-')
+			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ')
+		: (firstChapter?.data.title || '');
+
+	return {
+		id: post.id,
+		title: displayTitle,
+		description: firstChapter?.data.description || '',
+		slug: firstChapter?.id || '',
+		isSeries,
+		chapterCount: post.chapters.length
+	};
+});
+
+const isSeries = sortedChapters.length > 1;
 ---
 
-<Layout title={`${entry.data.title} | MH / LAB`} description={entry.data.description} ogImage={entry.data.image}>
-	<ChapterSidebar slot="sidebar" chapters={sortedChapters} currentId={entry.id} seriesTitle={seriesTitle} />
+<Layout title={`${entry.data.title} | MH / LAB`} description={entry.data.description} ogImage={entry.data.image} hasSidebar={isSeries}>
+	{isSeries && (
+		<ChapterSidebar slot="sidebar" chapters={sortedChapters} currentId={entry.id} seriesTitle={seriesTitle} />
+	)}
 	<article class="post">
 		<header>
 			<div class="meta-line">
 				<a class="breadcrumb-link" href={`${import.meta.env.BASE_URL}/category/${entry.data.category}`}>{entry.data.category}</a>
-				<span class="sep">/</span>
-				<a class="breadcrumb-link" href={`${import.meta.env.BASE_URL}/mobile/${sortedChapters[0].id}`}>{seriesTitle}</a>
-				<span class="sep">/</span>
-				<span class="ord">{String(entry.data.order || 0).padStart(2, '0')}</span>
+				{isSeries && (
+					<>
+						<span class="sep">/</span>
+						<a class="breadcrumb-link" href={`${import.meta.env.BASE_URL}/mobile/${sortedChapters[0].id}`}>{seriesTitle}</a>
+						<span class="sep">/</span>
+						<span class="ord">{String(entry.data.order || 0).padStart(2, '0')}</span>
+					</>
+				)}
 			</div>
 			<h1>{entry.data.title}</h1>
 			<p class="lede">{entry.data.description}</p>
@@ -49,26 +95,44 @@ const seriesTitle = mobileId
 			<Content />
 		</div>
 
-		<nav class="pagination">
-			<div class="pn-item">
-				{prev && (
-					<a href={`${import.meta.env.BASE_URL}/mobile/${prev.id}`}>
-						<span class="dir">Prev</span>
-						<span class="t">{String(prev.data.order || 0).padStart(2, '0')}. {prev.data.title.split(':').pop()?.trim() || prev.data.title}</span>
-					</a>
-				)}
-			</div>
-			
-			<div class="pn-item">
-				{next && (
-					<a href={`${import.meta.env.BASE_URL}/mobile/${next.id}`}>
-						<span class="dir">Next</span>
-						<span class="t">{String(next.data.order || 0).padStart(2, '0')}. {next.data.title.split(':').pop()?.trim() || next.data.title}</span>
-					</a>
-				)}
-			</div>
-		</nav>
+		{isSeries && (
+			<nav class="pagination">
+				<div class="pn-item">
+					{prev && (
+						<a href={`${import.meta.env.BASE_URL}/mobile/${prev.id}`}>
+							<span class="dir">Prev</span>
+							<span class="t">{String(prev.data.order || 0).padStart(2, '0')}. {prev.data.title.split(':').pop()?.trim() || prev.data.title}</span>
+						</a>
+					)}
+				</div>
+				
+				<div class="pn-item">
+					{next && (
+						<a href={`${import.meta.env.BASE_URL}/mobile/${next.id}`}>
+							<span class="dir">Next</span>
+							<span class="t">{String(next.data.order || 0).padStart(2, '0')}. {next.data.title.split(':').pop()?.trim() || next.data.title}</span>
+						</a>
+					)}
+				</div>
+			</nav>
+		)}
 	</article>
+
+	{otherPosts.length > 0 && (
+		<section class="recommendations" slot="bottom">
+			<h2 class="rec-title">Read Next</h2>
+			<div class="rec-grid">
+				{otherPosts.slice(0, 2).map(post => (
+					<a href={`${import.meta.env.BASE_URL}/mobile/${post.slug}`} class="rec-card">
+						<span class="rec-category">{post.isSeries ? 'Series' : 'Article'}</span>
+						<h3 class="rec-card-title">{post.title}</h3>
+						<p class="rec-desc">{post.description}</p>
+						{post.isSeries && <span class="rec-meta">{post.chapterCount} articles</span>}
+					</a>
+				))}
+			</div>
+		</section>
+	)}
 </Layout>
 
 <style>
@@ -175,5 +239,81 @@ const seriesTitle = mobileId
 	@media (max-width: 768px) {
 		h1 { font-size: 2.5rem; }
 		.pagination { grid-template-columns: 1fr; gap: 1.5rem; }
+	}
+
+	.recommendations {
+		margin-top: 6rem;
+		padding-top: 4rem;
+		border-top: 2px solid var(--border-color);
+	}
+
+	.rec-title {
+		font-size: 1.75rem;
+		margin-top: 0;
+		margin-bottom: 2rem;
+		font-weight: 700;
+		border-bottom: none;
+	}
+
+	.rec-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
+	}
+
+	.rec-card {
+		text-decoration: none;
+		display: flex;
+		flex-direction: column;
+		padding: 2rem;
+		border-radius: 1rem;
+		background: var(--code-bg);
+		border: 1px solid var(--border-color);
+		transition: all 0.25s ease;
+	}
+
+	.rec-card:hover {
+		border-color: var(--accent);
+		transform: translateY(-5px);
+		box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+	}
+
+	.rec-category {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		color: var(--accent);
+		margin-bottom: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+	}
+
+	.rec-card-title {
+		font-size: 1.4rem;
+		margin: 0 0 0.75rem 0;
+		color: var(--text-color);
+		line-height: 1.3;
+	}
+
+	.rec-desc {
+		font-size: 1rem;
+		color: var(--text-dim);
+		margin-bottom: 1.5rem;
+		line-height: 1.5;
+		flex-grow: 1;
+	}
+
+	.rec-meta {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		color: var(--text-dim);
+		font-weight: 600;
+	}
+
+	@media (max-width: 768px) {
+		.rec-grid {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
 	}
 </style>

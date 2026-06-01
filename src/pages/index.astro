@@ -25,16 +25,20 @@ const processedPosts = Object.values(postsMap).map(post => {
 	post.chapters.sort((a, b) => a.data.order - b.data.order);
 	const firstChapter = post.chapters[0];
 	
-	const displayTitle = post.id
-		.split('-')
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
+	const isSeries = post.chapters.length > 1;
+	const displayTitle = isSeries
+		? post.id
+			.split('-')
+			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ')
+		: (firstChapter?.data.title || '');
 
 	return {
 		...post,
+		isSeries,
 		title: displayTitle,
-		description: post.chapters[0]?.data.description || '',
-		firstChapterSlug: firstChapter.id
+		description: firstChapter?.data.description || '',
+		firstChapterSlug: firstChapter?.id || ''
 	};
 });
 
@@ -72,9 +76,11 @@ const sortedCategories = Object.keys(categories).sort((a, b) => {
 								</h3>
 								<p>{post.description}</p>
 							</div>
-							<div class="post-meta">
-								<span class="chapter-count">{post.chapters.length} articles</span>
-							</div>
+							{post.isSeries && (
+								<div class="post-meta">
+									<span class="chapter-count">{post.chapters.length} articles</span>
+								</div>
+							)}
 						</div>
 					))}
 				</div>

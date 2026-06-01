@@ -3,12 +3,14 @@ interface Props {
 	title: string;
 	description?: string;
 	ogImage?: string;
+	hasSidebar?: boolean;
 }
 
 const { 
 	title, 
 	description = "MH / LAB - Technical Research & Engineering",
-	ogImage
+	ogImage,
+	hasSidebar = Astro.slots.has('sidebar')
 } = Astro.props;
 
 const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://minghieu.github.io';
@@ -100,6 +102,7 @@ const canonicalURL = `${siteUrl}${Astro.url.pathname}`;
 			html.og-preview-mode .pagination, 
 			html.og-preview-mode .sidebar-toggle-btn, 
 			html.og-preview-mode .sidebar-backdrop,
+			html.og-preview-mode .recommendations,
 			html.og-preview-mode astro-dev-toolbar {
 				display: none !important;
 			}
@@ -326,7 +329,7 @@ const canonicalURL = `${siteUrl}${Astro.url.pathname}`;
 				display: none !important;
 			}
 		</style>
-		<main class={Astro.slots.has('sidebar') ? 'has-sidebar' : ''}>
+		<main class={hasSidebar ? 'has-sidebar' : ''}>
 			<nav>
 				<div class="nav-content">
 					<a href={import.meta.env.BASE_URL} class="logo">MH / LAB</a>
@@ -337,7 +340,7 @@ const canonicalURL = `${siteUrl}${Astro.url.pathname}`;
 					</div>
 				</div>
 			</nav>
-			{Astro.slots.has('sidebar') ? (
+			{hasSidebar ? (
 				<div class="layout-grid">
 					<div class="sidebar-wrapper">
 						<slot name="sidebar" />
@@ -347,8 +350,11 @@ const canonicalURL = `${siteUrl}${Astro.url.pathname}`;
 					</div>
 				</div>
 			) : (
-				<slot />
+				<div class="content-wrapper">
+					<slot />
+				</div>
 			)}
+			<slot name="bottom" />
 			<footer>
 				<div class="footer-content">
 					<p>© {new Date().getFullYear()} MH / LAB</p>

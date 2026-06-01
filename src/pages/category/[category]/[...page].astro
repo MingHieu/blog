@@ -30,13 +30,17 @@ export async function getStaticPaths({ paginate }) {
 			series.chapters.sort((a, b) => a.data.order - b.data.order);
 			const firstChapter = series.chapters[0];
 			
-			const displayTitle = series.id
-				.split('-')
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
+			const isSeries = series.chapters.length > 1;
+			const displayTitle = isSeries
+				? series.id
+					.split('-')
+					.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+					.join(' ')
+				: (firstChapter?.data.title || '');
 			
 			return {
 				id: series.id,
+				isSeries,
 				title: displayTitle,
 				description: firstChapter?.data.description || '',
 				firstChapterSlug: firstChapter?.id || '',
@@ -80,9 +84,11 @@ const categoryDisplayName = category.charAt(0).toUpperCase() + category.slice(1)
 							</h3>
 							<p>{series.description}</p>
 						</div>
-						<div class="series-meta">
-							<span class="chapter-count">{series.chapterCount} articles</span>
-						</div>
+						{series.isSeries && (
+							<div class="series-meta">
+								<span class="chapter-count">{series.chapterCount} articles</span>
+							</div>
+						)}
 					</div>
 				))
 			)}
