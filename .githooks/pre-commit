@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Run check script and capture exit code
+node scripts/check-og-required.js
+CHECK_STATUS=$?
+
+# If check script exited with 1, layout has changed
+if [ $CHECK_STATUS -eq 1 ]; then
+  echo "==============================================="
+  echo "📸 Structural changes detected. Generating and staging Open Graph screenshots..."
+  echo "==============================================="
+  yarn build:local
+  git add public/images/og
+else
+  echo "==============================================="
+  echo "✅ No structural changes. Skipping OG screenshot generation."
+  echo "==============================================="
+fi
+
+exit 0

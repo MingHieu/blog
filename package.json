@@ -9,6 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "build:local": "astro build && node scripts/generate-og-screenshots.js",
+    "check:og": "node scripts/check-og-required.js",
+    "prepare": "git config core.hooksPath .githooks && chmod +x .githooks/*",
     "preview": "astro preview",
     "astro": "astro"
   },

@@ -38,7 +38,7 @@ const processedPosts = Object.values(postsMap).map(post => {
 		isSeries,
 		title: displayTitle,
 		description: firstChapter?.data.description || '',
-		firstChapterSlug: firstChapter?.id || ''
+		firstChapterSlug: isSeries ? (firstChapter?.id || '') : post.id
 	};
 });
 

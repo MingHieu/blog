@@ -5,10 +5,34 @@ import ChapterSidebar from '../../components/ChapterSidebar.astro';
 
 export async function getStaticPaths() {
 	const chapters = await getCollection('mobile');
-	return chapters.map((entry) => ({
-		params: { slug: entry.id },
-		props: { entry },
-	}));
+	
+	const seriesMap = new Map<string, typeof chapters>();
+	for (const entry of chapters) {
+		const parts = entry.id.split('/');
+		if (parts.length >= 2) {
+			const seriesId = parts[0];
+			if (!seriesMap.has(seriesId)) {
+				seriesMap.set(seriesId, []);
+			}
+			seriesMap.get(seriesId)!.push(entry);
+		}
+	}
+
+	return chapters.map((entry) => {
+		const parts = entry.id.split('/');
+		let slug = entry.id;
+		if (parts.length >= 2) {
+			const seriesId = parts[0];
+			const seriesChapters = seriesMap.get(seriesId) || [];
+			if (seriesChapters.length === 1) {
+				slug = seriesId;
+			}
+		}
+		return {
+			params: { slug },
+			props: { entry },
+		};
+	});
 }
 
 const { entry } = Astro.props;
@@ -61,7 +85,7 @@ const otherPosts = Object.values(
 		id: post.id,
 		title: displayTitle,
 		description: firstChapter?.data.description || '',
-		slug: firstChapter?.id || '',
+		slug: isSeries ? (firstChapter?.id || '') : post.id,
 		isSeries,
 		chapterCount: post.chapters.length
 	};
