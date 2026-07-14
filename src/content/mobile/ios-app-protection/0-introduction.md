@@ -1,20 +1,20 @@
 ---
-title: "So, your app got hacked. Welcome to the club."
+title: "Practical guide to iOS app protection"
 description: "How it all started with a frantic call at 2 AM."
 order: 0
 category: "mobile"
 ---
 
 
-It all started with a frantic call from my boss at 2 AM: **"Our app has been attacked. Someone cracked the paid features and they're laughing at us on Telegram."**
+It all started with a frantic call from my boss at 2 AM: "Our app has been attacked. Someone cracked the paid features and they're laughing at us on Telegram."
 
-I froze. I had no idea where to even start digging. That was the exact moment I realized I was **cooked**.
+I froze. I had no idea where to even start digging. That was the exact moment I realized I was cooked.
 
 I did what any desperate dev would do—I hit Google. I searched for *"how to detect jailbreak,"* *"iOS app security,"* and *"how to stop hackers."*
 
-But everything I found was a total mess. I spent days scrolling through "Top 10 iOS Security Tips" on Medium and LinkedIn, and honestly? Most of them are absolute bullshit. They’re written by people who have never actually tried to bypass a security check themselves. They give you outdated code snippets, basic file checks, and "sample" code that falls apart the second someone actually tries to poke at your app's logic. It’s nothing but **security theater**, and it won't save you when the stakes are real.
+But everything I found was a total mess. I spent days scrolling through "Top 10 iOS Security Tips" on Medium and LinkedIn, and honestly? Most of them are absolute bullshit. They’re written by people who have never actually tried to bypass a security check themselves. They give you outdated code snippets, basic file checks, and "sample" code that falls apart the second someone actually tries to poke at your app's logic. It’s nothing but security theater, and it won't save you when the stakes are real.
 
-After zero progress and total exhaustion, I realized why I was failing: I was thinking like a developer, not a **hacker**. I wanted to know exactly how they were doing it, what tools they were using, and why they were laughing at my basic security checks.
+After zero progress and total exhaustion, I realized why I was failing: I was thinking like a developer, not a hacker. I wanted to know exactly how they were doing it, what tools they were using, and why they were laughing at my basic security checks.
 
 That’s when the real journey began.
 

@@ -1,680 +1,732 @@
 ---
 interface Props {
-	title: string;
-	description?: string;
-	ogImage?: string;
-	hasSidebar?: boolean;
+  title: string;
+  description?: string;
+  ogImage?: string;
+  hasSidebar?: boolean;
 }
 
-const { 
-	title, 
-	description = "MH / LAB - Technical Research & Engineering",
-	ogImage,
-	hasSidebar = Astro.slots.has('sidebar')
+const {
+  title,
+  description = 'MH / LAB - Technical Research & Engineering',
+  ogImage,
+  hasSidebar = Astro.slots.has('sidebar'),
 } = Astro.props;
 
-const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://minghieu.github.io';
+const siteUrl = Astro.site
+  ? Astro.site.href.replace(/\/$/, '')
+  : 'https://minghieu.github.io';
 const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
-const rawPath = Astro.url.pathname.substring(baseUrl.length).replace(/\/$/, '').replace(/^\//, '');
+const rawPath = Astro.url.pathname
+  .substring(baseUrl.length)
+  .replace(/\/$/, '')
+  .replace(/^\//, '');
 const ogPathSegment = rawPath === '' ? 'index' : rawPath;
 const defaultOgImagePath = `${baseUrl}/images/og/${ogPathSegment}.png`;
 const ogImagePath = ogImage || defaultOgImagePath;
-const resolvedOgImage = ogImagePath.startsWith('http') 
-	? ogImagePath 
-	: `${siteUrl}${ogImagePath}`;
+const resolvedOgImage = ogImagePath.startsWith('http')
+  ? ogImagePath
+  : `${siteUrl}${ogImagePath}`;
 const canonicalURL = `${siteUrl}${Astro.url.pathname}`;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}/favicon.svg`} />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href={`${import.meta.env.BASE_URL}/favicon.svg`}
+    />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
 
-		<!-- Open Graph / Facebook / Zalo -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={canonicalURL} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:image" content={resolvedOgImage} />
+    <!-- Open Graph / Facebook / Zalo -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={resolvedOgImage} />
 
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={canonicalURL} />
-		<meta property="twitter:title" content={title} />
-		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={resolvedOgImage} />
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={resolvedOgImage} />
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-	</head>
-	<body>
-		<script is:inline>
-			if (new URLSearchParams(window.location.search).get('og') === 'true') {
-				document.documentElement.classList.add('og-preview-mode');
-				const path = window.location.pathname;
-				const isHome = path === '/blog/' || path === '/blog' || path.endsWith('/blog/') || path.endsWith('/blog');
-				const isAbout = path.includes('/about');
-				const isCategory = path.includes('/category/');
-				
-				if (isHome) {
-					document.documentElement.classList.add('og-is-home');
-				} else if (isAbout) {
-					document.documentElement.classList.add('og-is-about');
-				} else if (isCategory) {
-					document.documentElement.classList.add('og-is-category');
-				} else {
-					document.documentElement.classList.add('og-is-post');
-				}
-			}
-		</script>
-		<div class="og-branding">
-			<span class="og-logo">MH / LAB</span>
-			<span class="og-tagline">Technical Research & Engineering</span>
-		</div>
-		<style is:global>
-			/* Custom styles for OG preview screenshot */
-			.og-branding {
-				display: none;
-			}
-			
-			/* Base OG layout overrides */
-			html.og-preview-mode, 
-			html.og-preview-mode body {
-				background: var(--bg-color) !important;
-				width: 1200px !important;
-				height: 630px !important;
-				overflow: hidden !important;
-				margin: 0 !important;
-				padding: 0 !important;
-				box-sizing: border-box !important;
-			}
-			
-			html.og-preview-mode nav, 
-			html.og-preview-mode footer, 
-			html.og-preview-mode #back-to-top, 
-			html.og-preview-mode .sidebar-wrapper, 
-			html.og-preview-mode .pagination, 
-			html.og-preview-mode .sidebar-toggle-btn, 
-			html.og-preview-mode .sidebar-backdrop,
-			html.og-preview-mode .recommendations,
-			html.og-preview-mode astro-dev-toolbar {
-				display: none !important;
-			}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <script is:inline>
+      if (new URLSearchParams(window.location.search).get('og') === 'true') {
+        document.documentElement.classList.add('og-preview-mode');
+        const path = window.location.pathname;
+        const isHome =
+          path === '/blog/' ||
+          path === '/blog' ||
+          path.endsWith('/blog/') ||
+          path.endsWith('/blog');
+        const isAbout = path.includes('/about');
+        const isCategory = path.includes('/category/');
 
-			html.og-preview-mode main {
-				width: 1200px !important;
-				max-width: 1200px !important;
-				height: 630px !important;
-				padding: 0 !important;
-				margin: 0 !important;
-				display: flex !important;
-				flex-direction: column !important;
-				justify-content: center !important;
-				box-sizing: border-box !important;
-				position: relative !important;
-			}
+        if (isHome) {
+          document.documentElement.classList.add('og-is-home');
+        } else if (isAbout) {
+          document.documentElement.classList.add('og-is-about');
+        } else if (isCategory) {
+          document.documentElement.classList.add('og-is-category');
+        } else {
+          document.documentElement.classList.add('og-is-post');
+        }
+      }
+    </script>
+    <div class="og-branding">
+      <span class="og-logo">MH / LAB</span>
+      <span class="og-tagline">Technical Research & Engineering</span>
+    </div>
+    <style is:global>
+      /* Custom styles for OG preview screenshot */
+      .og-branding {
+        display: none;
+      }
 
-			html.og-preview-mode .layout-grid {
-				display: block !important;
-				width: 100% !important;
-				margin: 0 !important;
-				padding: 0 !important;
-			}
+      /* Base OG layout overrides */
+      html.og-preview-mode,
+      html.og-preview-mode body {
+        background: var(--bg-color) !important;
+        width: 1200px !important;
+        height: 630px !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
 
-			html.og-preview-mode .content-wrapper {
-				width: 100% !important;
-				display: flex !important;
-				flex-direction: column !important;
-				justify-content: center !important;
-				padding: 0 6rem !important;
-				box-sizing: border-box !important;
-				height: 630px !important;
-			}
+      html.og-preview-mode nav,
+      html.og-preview-mode footer,
+      html.og-preview-mode #back-to-top,
+      html.og-preview-mode .sidebar-wrapper,
+      html.og-preview-mode .pagination,
+      html.og-preview-mode .sidebar-toggle-btn,
+      html.og-preview-mode .sidebar-backdrop,
+      html.og-preview-mode .recommendations,
+      html.og-preview-mode astro-dev-toolbar {
+        display: none !important;
+      }
 
-			/* branding logo at the top-left */
-			html.og-preview-mode:not(.og-is-home) .og-branding {
-				display: flex !important;
-				position: absolute;
-				top: 5rem;
-				left: 6rem;
-				align-items: baseline;
-				gap: 0.8rem;
-				z-index: 9999;
-			}
+      html.og-preview-mode main {
+        width: 1200px !important;
+        max-width: 1200px !important;
+        height: 630px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+      }
 
-			html.og-preview-mode .og-logo {
-				font-family: 'Quicksand', sans-serif;
-				font-size: 1.8rem;
-				font-weight: 700;
-				color: var(--text-color);
-			}
+      html.og-preview-mode .layout-grid {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
 
-			html.og-preview-mode .og-tagline {
-				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.85rem;
-				color: var(--text-dim);
-				text-transform: uppercase;
-				letter-spacing: 0.1em;
-			}
+      html.og-preview-mode .content-wrapper {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        padding: 0 6rem !important;
+        box-sizing: border-box !important;
+        height: 630px !important;
+      }
 
-			/* 1. HOMEPAGE SPECIFIC (Centered brand card) */
-			html.og-is-home main {
-				display: none !important;
-			}
-			
-			html.og-is-home body {
-				display: flex !important;
-				align-items: center !important;
-				justify-content: center !important;
-			}
+      /* branding logo at the top-left */
+      html.og-preview-mode:not(.og-is-home) .og-branding {
+        display: flex !important;
+        position: absolute;
+        top: 5rem;
+        left: 6rem;
+        align-items: baseline;
+        gap: 0.8rem;
+        z-index: 9999;
+      }
 
-			html.og-is-home .og-branding {
-				position: static !important;
-				display: flex !important;
-				flex-direction: column !important;
-				align-items: center !important;
-				justify-content: center !important;
-				margin: auto !important;
-				text-align: center !important;
-				gap: 1.5rem !important;
-			}
+      html.og-preview-mode .og-logo {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-color);
+      }
 
-			html.og-is-home .og-logo {
-				font-size: 6rem !important;
-				letter-spacing: -0.04em !important;
-			}
+      html.og-preview-mode .og-tagline {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
 
-			html.og-is-home .og-tagline {
-				font-size: 1.6rem !important;
-				letter-spacing: 0.2em !important;
-				color: var(--accent) !important;
-			}
+      /* 1. HOMEPAGE SPECIFIC (Centered brand card) */
+      html.og-is-home main {
+        display: none !important;
+      }
 
-			/* 2. ABOUT PAGE SPECIFIC */
-			html.og-is-about .about-container {
-				padding: 0 !important;
-				max-width: 100% !important;
-				margin-top: 4rem !important;
-			}
+      html.og-is-home body {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
 
-			html.og-is-about .about-container header {
-				margin-bottom: 2rem !important;
-				padding-bottom: 0 !important;
-				border-bottom: none !important;
-			}
+      html.og-is-home .og-branding {
+        position: static !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: auto !important;
+        text-align: center !important;
+        gap: 1.5rem !important;
+      }
 
-			html.og-is-about .about-container header h1 {
-				font-size: 4.5rem !important;
-				line-height: 1.1 !important;
-				margin: 0 0 1.5rem 0 !important;
-				font-weight: 700 !important;
-			}
+      html.og-is-home .og-logo {
+        font-size: 6rem !important;
+        letter-spacing: -0.04em !important;
+      }
 
-			html.og-is-about .about-container .bio p {
-				font-size: 2rem !important;
-				line-height: 1.6 !important;
-				color: var(--text-dim) !important;
-				max-width: 1000px !important;
-				margin: 0 !important;
-			}
+      html.og-is-home .og-tagline {
+        font-size: 1.6rem !important;
+        letter-spacing: 0.2em !important;
+        color: var(--accent) !important;
+      }
 
-			html.og-is-about .about-container .contact,
-			html.og-is-about .about-container .quote-section {
-				display: none !important;
-			}
+      /* 2. ABOUT PAGE SPECIFIC */
+      html.og-is-about .about-container {
+        padding: 0 !important;
+        max-width: 100% !important;
+        margin-top: 4rem !important;
+      }
 
-			/* 3. POST PAGE SPECIFIC */
-			html.og-is-post .post {
-				padding: 0 !important;
-				margin-top: 4rem !important;
-			}
+      html.og-is-about .about-container header {
+        margin-bottom: 2rem !important;
+        padding-bottom: 0 !important;
+        border-bottom: none !important;
+      }
 
-			html.og-is-post .post header {
-				margin-bottom: 0 !important;
-				padding-bottom: 0 !important;
-				border-bottom: none !important;
-			}
+      html.og-is-about .about-container header h1 {
+        font-size: 4.5rem !important;
+        line-height: 1.1 !important;
+        margin: 0 0 1.5rem 0 !important;
+        font-weight: 700 !important;
+      }
 
-			html.og-is-post .post .meta-line {
-				font-size: 1.1rem !important;
-				margin-bottom: 2rem !important;
-			}
+      html.og-is-about .about-container .bio p {
+        font-size: 2rem !important;
+        line-height: 1.6 !important;
+        color: var(--text-dim) !important;
+        max-width: 1000px !important;
+        margin: 0 !important;
+      }
 
-			html.og-is-post .post h1 {
-				font-size: 4.5rem !important;
-				line-height: 1.15 !important;
-				margin: 0 0 1.5rem 0 !important;
-				letter-spacing: -0.03em !important;
-				font-weight: 700 !important;
-			}
+      html.og-is-about .about-container .contact,
+      html.og-is-about .about-container .quote-section {
+        display: none !important;
+      }
 
-			html.og-is-post .post .lede {
-				font-size: 2rem !important;
-				line-height: 1.5 !important;
-				max-width: 1000px !important;
-				color: var(--text-dim) !important;
-				margin: 0 !important;
-			}
+      /* 3. POST PAGE SPECIFIC */
+      html.og-is-post .post {
+        padding: 0 !important;
+        margin-top: 4rem !important;
+      }
 
-			html.og-is-post .post .content,
-			html.og-is-post .post .pagination {
-				display: none !important;
-			}
+      html.og-is-post .post header {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        border-bottom: none !important;
+      }
 
-			/* 4. CATEGORY PAGE SPECIFIC */
-			html.og-is-category .content-wrapper {
-				display: flex !important;
-				flex-direction: column !important;
-				justify-content: center !important;
-				align-items: center !important;
-				text-align: center !important;
-			}
+      html.og-is-post .post .meta-line {
+        font-size: 1.1rem !important;
+        margin-bottom: 2rem !important;
+      }
 
-			html.og-is-category .category-page {
-				padding: 0 !important;
-				display: flex !important;
-				flex-direction: column !important;
-				align-items: center !important;
-				justify-content: center !important;
-				text-align: center !important;
-			}
+      html.og-is-post .post h1 {
+        font-size: 4.5rem !important;
+        line-height: 1.15 !important;
+        margin: 0 0 1.5rem 0 !important;
+        letter-spacing: -0.03em !important;
+        font-weight: 700 !important;
+      }
 
-			html.og-is-category .category-header {
-				margin: 0 !important;
-				padding: 0 !important;
-				border-bottom: none !important;
-				display: flex !important;
-				flex-direction: column !important;
-				align-items: center !important;
-				justify-content: center !important;
-				text-align: center !important;
-			}
+      html.og-is-post .post .lede {
+        font-size: 2rem !important;
+        line-height: 1.5 !important;
+        max-width: 1000px !important;
+        color: var(--text-dim) !important;
+        margin: 0 !important;
+      }
 
-			html.og-is-category .category-header .back-link {
-				display: none !important;
-			}
+      html.og-is-post .post .content,
+      html.og-is-post .post .pagination {
+        display: none !important;
+      }
 
-			html.og-is-category .category-header .category-tag {
-				font-size: 1.1rem !important;
-				margin-bottom: 2rem !important;
-				text-transform: uppercase !important;
-				letter-spacing: 0.15em !important;
-			}
+      /* 4. CATEGORY PAGE SPECIFIC */
+      html.og-is-category .content-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
 
-			html.og-is-category .category-header h1 {
-				font-size: 5.5rem !important;
-				font-weight: 700 !important;
-				color: var(--text-color) !important;
-				margin: 0 0 1.5rem 0 !important;
-				letter-spacing: -0.04em !important;
-			}
+      html.og-is-category .category-page {
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
 
-			html.og-is-category .category-header .category-desc {
-				display: block !important;
-				font-size: 2rem !important;
-				color: var(--text-dim) !important;
-				max-width: 900px !important;
-				margin: 0 !important;
-				line-height: 1.5 !important;
-			}
+      html.og-is-category .category-header {
+        margin: 0 !important;
+        padding: 0 !important;
+        border-bottom: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
 
-			html.og-is-category .series-list,
-			html.og-is-category .pagination-nav {
-				display: none !important;
-			}
-		</style>
-		<main class={hasSidebar ? 'has-sidebar' : ''}>
-			<nav>
-				<div class="nav-content">
-					<a href={import.meta.env.BASE_URL} class="logo">MH / LAB</a>
-					<div class="nav-links">
-						<a href={import.meta.env.BASE_URL}>Home</a>
-						<a href={`${import.meta.env.BASE_URL}/about`}>About</a>
-						<a href="https://github.com/minghieu" target="_blank">GitHub</a>
-					</div>
-				</div>
-			</nav>
-			{hasSidebar ? (
-				<div class="layout-grid">
-					<div class="sidebar-wrapper">
-						<slot name="sidebar" />
-					</div>
-					<div class="content-wrapper">
-						<slot />
-					</div>
-				</div>
-			) : (
-				<div class="content-wrapper">
-					<slot />
-				</div>
-			)}
-			<slot name="bottom" />
-			<footer>
-				<div class="footer-content">
-					<p>© {new Date().getFullYear()} MH / LAB</p>
-				</div>
-			</footer>
-		</main>
+      html.og-is-category .category-header .back-link {
+        display: none !important;
+      }
 
-		<!-- Scroll To Top Button -->
-		<button id="back-to-top" class="back-to-top" aria-label="Scroll to top">
-			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-				<polyline points="18 15 12 9 6 15"></polyline>
-			</svg>
-		</button>
-		<script>
-			// Make all external links open in new tab
-			document.querySelectorAll('a[href^="http"]').forEach(link => {
-				link.setAttribute('target', '_blank');
-				link.setAttribute('rel', 'noopener noreferrer');
-			});
+      html.og-is-category .category-header .category-tag {
+        font-size: 1.1rem !important;
+        margin-bottom: 2rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.15em !important;
+      }
 
-			// Back to Top button logic
-			const backToTopBtn = document.getElementById('back-to-top');
-			if (backToTopBtn) {
-				window.addEventListener('scroll', () => {
-					if (window.scrollY > 400) {
-						backToTopBtn.classList.add('visible');
-					} else {
-						backToTopBtn.classList.remove('visible');
-					}
-				}, { passive: true });
+      html.og-is-category .category-header h1 {
+        font-size: 5.5rem !important;
+        font-weight: 700 !important;
+        color: var(--text-color) !important;
+        margin: 0 0 1.5rem 0 !important;
+        letter-spacing: -0.04em !important;
+      }
 
-				backToTopBtn.addEventListener('click', () => {
-					window.scrollTo({
-						top: 0,
-						behavior: 'smooth'
-					});
-				});
-			}
-		</script>
-	</body>
+      html.og-is-category .category-header .category-desc {
+        display: block !important;
+        font-size: 2rem !important;
+        color: var(--text-dim) !important;
+        max-width: 900px !important;
+        margin: 0 !important;
+        line-height: 1.5 !important;
+      }
+
+      html.og-is-category .series-list,
+      html.og-is-category .pagination-nav {
+        display: none !important;
+      }
+    </style>
+    <main class={hasSidebar ? 'has-sidebar' : ''}>
+      <nav>
+        <div class="nav-content">
+          <a href={import.meta.env.BASE_URL} class="logo">MH / LAB</a>
+          <div class="nav-links">
+            <a href={import.meta.env.BASE_URL}>Home</a>
+            <a href={`${import.meta.env.BASE_URL}/about`}>About</a>
+            <a href="https://github.com/minghieu" target="_blank">GitHub</a>
+          </div>
+        </div>
+      </nav>
+      {
+        hasSidebar ? (
+          <div class="layout-grid">
+            <div class="sidebar-wrapper">
+              <slot name="sidebar" />
+            </div>
+            <div class="content-wrapper">
+              <slot />
+            </div>
+          </div>
+        ) : (
+          <div class="content-wrapper">
+            <slot />
+          </div>
+        )
+      }
+      <slot name="bottom" />
+      <footer>
+        <div class="footer-content">
+          <p>© {new Date().getFullYear()} MH / LAB</p>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Scroll To Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="Scroll to top">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+    <script>
+      // Make all external links open in new tab
+      document.querySelectorAll('a[href^="http"]').forEach((link) => {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      });
+
+      // Back to Top button logic
+      const backToTopBtn = document.getElementById('back-to-top');
+      if (backToTopBtn) {
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (window.scrollY > 400) {
+              backToTopBtn.classList.add('visible');
+            } else {
+              backToTopBtn.classList.remove('visible');
+            }
+          },
+          { passive: true },
+        );
+
+        backToTopBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        });
+      }
+    </script>
+  </body>
 </html>
 
 <style is:global>
-	:root {
-		--bg-color: #ffffff;
-		--text-color: #2d3436; /* Slightly softer than pure black */
-		--text-dim: #636e72;
-		--border-color: #dfe6e9;
-		--accent: #0984e3; /* A nice friendly blue */
-		--code-bg: #f8f9fa;
-		--selection-bg: #e3f2fd;
-	}
-	
-	@media (prefers-color-scheme: dark) {
-		:root {
-			--bg-color: #0f172a;
-			--text-color: #f1f5f9;
-			--text-dim: #94a3b8;
-			--border-color: #1e293b;
-			--accent: #38bdf8;
-			--code-bg: #020617;
-			--selection-bg: #1e293b;
-		}
-	}
+  :root {
+    --bg-color: #ffffff;
+    --text-color: #2d3436; /* Slightly softer than pure black */
+    --text-dim: #636e72;
+    --border-color: #dfe6e9;
+    --accent: #0984e3; /* A nice friendly blue */
+    --code-bg: #f8f9fa;
+    --selection-bg: #e3f2fd;
+  }
 
-	::selection {
-		background: var(--selection-bg);
-	}
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-color: #0f172a;
+      --text-color: #f1f5f9;
+      --text-dim: #94a3b8;
+      --border-color: #1e293b;
+      --accent: #38bdf8;
+      --code-bg: #020617;
+      --selection-bg: #1e293b;
+    }
+  }
 
-	* {
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-	}
+  ::selection {
+    background: var(--selection-bg);
+  }
 
-	html {
-		/* Switching to Nunito for body - round and cute but very readable */
-		font-family: 'Nunito', sans-serif;
-		background: var(--bg-color);
-		color: var(--text-color);
-		scroll-behavior: smooth;
-		-webkit-font-smoothing: antialiased;
-	}
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-	body {
-		min-height: 100vh;
-	}
+  html {
+    /* Switching to Nunito for body - round and cute but very readable */
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
 
-	main {
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 0 2rem;
-		transition: max-width 0.3s ease;
-	}
+  body {
+    min-height: 100vh;
+  }
 
-	main.has-sidebar {
-		max-width: 1200px;
-	}
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    transition: max-width 0.3s ease;
+  }
 
-	.layout-grid {
-		display: grid;
-		grid-template-columns: 280px 1fr;
-		gap: 4rem;
-		align-items: start;
-		width: 100%;
-	}
+  main.has-sidebar {
+    max-width: 1200px;
+  }
 
-	.sidebar-wrapper {
-		position: sticky;
-		top: 4rem;
-		min-width: 0;
-		z-index: 100;
-	}
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 4rem;
+    align-items: start;
+    width: 100%;
+  }
 
-	.content-wrapper {
-		min-width: 0;
-		width: 100%;
-	}
+  .sidebar-wrapper {
+    position: sticky;
+    top: 4rem;
+    min-width: 0;
+    z-index: 100;
+  }
 
-	body.sidebar-open {
-		overflow: hidden;
-	}
+  .content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
 
-	@media (max-width: 1023px) {
-		.layout-grid {
-			grid-template-columns: 1fr;
-			gap: 0;
-		}
-		main.has-sidebar {
-			max-width: 800px;
-		}
-	}
+  body.sidebar-open {
+    overflow: hidden;
+  }
 
-	nav {
-		padding: 4rem 0;
-	}
+  @media (max-width: 1023px) {
+    .layout-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    main.has-sidebar {
+      max-width: 800px;
+    }
+  }
 
-	.nav-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-	}
+  nav {
+    padding: 4rem 0;
+  }
 
-	.logo {
-		font-family: 'Quicksand', sans-serif; /* Rounder headers */
-		font-size: 1.4rem;
-		font-weight: 700;
-		text-decoration: none;
-		color: var(--text-color);
-		letter-spacing: -0.02em;
-	}
+  .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
 
-	.nav-links a {
-		margin-left: 1.5rem;
-		text-decoration: none;
-		color: var(--text-dim);
-		font-weight: 600;
-		font-size: 0.95rem;
-		transition: color 0.15s ease;
-	}
+  .logo {
+    font-family: 'Quicksand', sans-serif; /* Rounder headers */
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text-color);
+    letter-spacing: -0.02em;
+  }
 
-	.nav-links a:hover {
-		color: var(--accent);
-	}
+  .nav-links a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.15s ease;
+  }
 
-	footer {
-		margin-top: 4rem;
-		padding-bottom: 4rem;
-		border-top: 1px solid var(--border-color);
-		padding-top: 3rem;
-	}
+  .nav-links a:hover {
+    color: var(--accent);
+  }
 
-	.footer-content {
-		display: flex;
-		justify-content: center;
-		color: var(--text-dim);
-		font-size: 0.9rem;
-		font-family: 'Quicksand', sans-serif;
-	}
+  footer {
+    margin-top: 4rem;
+    padding-bottom: 4rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 3rem;
+  }
 
-	/* Round & Cute Typography */
-	h1, h2, h3, h4 {
-		font-family: 'Quicksand', sans-serif;
-		margin: 3rem 0 1.5rem;
-		line-height: 1.3;
-		color: var(--text-color);
-		font-weight: 700;
-	}
+  .footer-content {
+    display: flex;
+    justify-content: center;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-family: 'Quicksand', sans-serif;
+  }
 
-	h1 { font-size: 3rem; margin-top: 0; }
-	h2 { font-size: 2rem; margin-top: 4rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
-	h3 { font-size: 1.5rem; }
+  /* Round & Cute Typography */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Quicksand', sans-serif;
+    margin: 3rem 0 1.5rem;
+    line-height: 1.3;
+    color: var(--text-color);
+    font-weight: 700;
+  }
 
-	p {
-		margin-bottom: 1.5rem;
-		line-height: 1.8;
-		font-size: 1.2rem;
-	}
+  h1 {
+    font-size: 3rem;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 2rem;
+    margin-top: 4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
 
-	strong {
-		font-weight: 700;
-	}
+  p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    font-size: 1.2rem;
+  }
 
-	pre {
-		background: #0d1117 !important; /* Force a dark professional background */
-		padding: 2rem;
-		border-radius: 1rem;
-		border: 1px solid var(--border-color);
-		margin: 2.5rem 0;
-		overflow-x: auto;
-		box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-	}
+  strong {
+    font-weight: 700;
+  }
 
-	code {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.9em;
-		background: var(--code-bg);
-		padding: 0.2rem 0.4rem;
-		border-radius: 0.4rem;
-		color: var(--accent);
-	}
+  pre {
+    background: #0d1117 !important; /* Force a dark professional background */
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    margin: 2.5rem 0;
+    overflow-x: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
 
-	pre code {
-		background: transparent !important;
-		padding: 0;
-		border: none;
-		color: #e6edf3 !important; /* High contrast light gray/white */
-		font-size: 1rem; /* Slightly larger for readability */
-		line-height: 1.6;
-	}
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    color: var(--accent);
+  }
 
-	blockquote {
-		border-left: 4px solid var(--accent);
-		background: var(--selection-bg);
-		padding: 1.5rem 2rem;
-		margin: 3rem 0;
-		border-radius: 0 1rem 1rem 0;
-	}
+  pre code {
+    background: transparent !important;
+    padding: 0;
+    border: none;
+    color: #e6edf3 !important; /* High contrast light gray/white */
+    font-size: 1rem; /* Slightly larger for readability */
+    line-height: 1.6;
+  }
 
-	blockquote p {
-		font-size: 1.25rem;
-		margin-bottom: 0;
-		color: var(--text-color);
-	}
+  blockquote {
+    border-left: 4px solid var(--accent);
+    background: var(--selection-bg);
+    padding: 1.5rem 2rem;
+    margin: 3rem 0;
+    border-radius: 0 1rem 1rem 0;
+  }
 
-	ul, ol {
-		margin-bottom: 2rem;
-		padding-left: 2rem;
-	}
+  blockquote p {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+    color: var(--text-color);
+  }
 
-	li {
-		margin-bottom: 0.8rem;
-		font-size: 1.2rem;
-		line-height: 1.7;
-	}
+  ul,
+  ol {
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+  }
 
-	a {
-		color: var(--accent);
-		text-decoration: none;
-		transition: text-decoration 0.2s ease;
-	}
+  li {
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+    line-height: 1.7;
+  }
 
-	a:hover {
-		text-decoration: underline;
-	}
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+  }
 
-	img {
-		max-width: 100%;
-		height: auto;
-		margin: 3rem 0;
-		border-radius: 1rem;
-		display: block;
-	}
+  a:hover {
+    text-decoration: underline;
+  }
 
-	hr {
-		border: none;
-		border-top: 2px solid var(--border-color);
-		margin: 5rem 0;
-		border-radius: 2px;
-	}
+  img {
+    max-width: 100%;
+    height: auto;
+    margin: 3rem 0;
+    border-radius: 1rem;
+    display: block;
+  }
 
-	@media (max-width: 768px) {
-		h1 { font-size: 2.25rem; }
-		h2 { font-size: 1.6rem; }
-		nav { padding: 2.5rem 0; }
-	}
+  hr {
+    border: none;
+    border-top: 2px solid var(--border-color);
+    margin: 5rem 0;
+    border-radius: 2px;
+  }
 
-	/* Floating Back to Top Button */
-	.back-to-top {
-		position: fixed;
-		bottom: 2rem;
-		right: 2rem;
-		z-index: 90;
-		background: var(--bg-color);
-		color: var(--text-color);
-		border: 1px solid var(--border-color);
-		width: 2.75rem;
-		height: 2.75rem;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(10px);
-		transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	}
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2.25rem;
+    }
+    h2 {
+      font-size: 1.6rem;
+    }
+    nav {
+      padding: 2.5rem 0;
+    }
+  }
 
-	.back-to-top.visible {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-	}
+  /* Floating Back to Top Button */
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 90;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 
-	.back-to-top:hover {
-		border-color: var(--accent);
-		color: var(--accent);
-		transform: translateY(-2px);
-		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-	}
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
 </style>

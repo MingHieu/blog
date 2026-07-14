@@ -21,7 +21,7 @@ To do real damage, hackers need a "lawless" environment.
 
 ### 2. The Debugger
 
-While jailbreaks and emulators provide the environment, **debuggers like LLDB or Frida** (Low Level Debugger) are the actual weapons. They **pause your app** and directly manipulate memory and function behavior.
+While jailbreaks and emulators provide the environment, **debuggers like LLDB or Frida** (Low Level Debugger) are the actual weapons. They pause your app and directly manipulate memory and function behavior.
 
 Here's what a real LLDB attack looks like:
 
@@ -101,4 +101,4 @@ rebind_symbols((struct rebinding[1]) {
 * **Fishhook:** Rebinds function pointers to malicious versions
 * **MobileSubstrate:** Modifies the method at load time before your code runs
 
-**Feel like you're losing?** Good. That means you're paying attention. In the next chapter, we're going to talk about the "Hostile Ground" and how to detect if your app is currently being bullied by these tools.
+Feel like you're losing? Good. That means you're paying attention. In the next chapter, we're going to talk about the "Hostile Ground" and how to detect if your app is currently being bullied by these tools.

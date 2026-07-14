@@ -6,7 +6,7 @@ category: "mobile"
 ---
 
 
-So, we've built a fortress. We've checked for jailbreaks, emulators, debuggers, man-in-the-middle proxies, and we've hidden our binary. But what if the hacker is already *inside* the building? 
+So, we've built a fortress. We've checked for jailbreaks, emulators, debuggers, man-in-the-middle proxies, and we've hidden our binary. But what if the hacker is already inside the building?
 
 In **Chapter 2**, we introduced the three main hooking weapons that hackers use to rewrite our app's brain at runtime: **Frida (JS Interceptor)**, **Fishhook (C Hook)**, and **MSHook (MobileSubstrate)**. Today, we're going to dig deep into how these hooks operate under the hood, and how we can actively defend against them.
 
@@ -21,19 +21,21 @@ Frida's inline hooking dynamically writes trampoline instructions in memory, red
 ### How to Prevent It
 
 Because Frida is a dynamic debugger at its core, the most robust defense is to stop it from attaching or running in the first place:
-*   **Debugger Blockers:** Use `ptrace(PT_DENY_ATTACH, ...)` and monitor the `P_TRACED` flag via `sysctl` to terminate the app if a debugger attaches. (Refer to **Chapter 3** for the implementation).
-*   **Port Scanning:** Scan for Frida’s default server port `27042`.
-*   **Library Scanning:** Inspect the list of loaded dynamic libraries (`_dyld_get_image_name`) for any name containing `frida-agent.dylib` or `FridaGadget`.
+
+* **Debugger Blockers:** Use `ptrace(PT_DENY_ATTACH, ...)` and monitor the `P_TRACED` flag via `sysctl` to terminate the app if a debugger attaches. (Refer to **Chapter 3** for the implementation).
+* **Port Scanning:** Scan for Frida’s default server port `27042`.
+* **Library Scanning:** Inspect the list of loaded dynamic libraries (`_dyld_get_image_name`) for any name containing `frida-agent.dylib` or `FridaGadget`.
 
 ## 2. Fishhook (C Function Hooking)
 
-Fishhook is a powerful utility (originally open-sourced by Facebook) that allows hackers to hook C functions (like `open`, `connect`, or `strcmp`) at runtime. 
+Fishhook is a powerful utility (originally open-sourced by Facebook) that allows hackers to hook C functions (like `open`, `connect`, or `strcmp`) at runtime.
 
 ### Under the Hood
 
 In a Mach-O executable, calls to external dynamic libraries are resolved lazily using symbol tables located in the `__DATA` segment:
-*   `__la_symbol_ptr` (lazy symbol pointers)
-*   `__nl_symbol_ptr` (non-lazy symbol pointers)
+
+* `__la_symbol_ptr` (lazy symbol pointers)
+* `__nl_symbol_ptr` (non-lazy symbol pointers)
 
 When your app calls a C standard function, it jumps to a stub that retrieves the actual function address from these pointer tables. **Fishhook works by finding these tables in memory and replacing the dynamic library addresses with pointers to the hacker's fake functions.**
 

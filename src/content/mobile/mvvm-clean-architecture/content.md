@@ -1,10 +1,12 @@
 ---
-title: "Start New FE Project with MVVM and Clean Arch"
+title: "Frontend project with MVVM & Clean Architecture"
 description: "Stop coding on vibes. Build a structured, explainable frontend application with MVVM and Clean Architecture."
 order: 0
-category: "mobile"
+category: "frontend"
 ---
 
+
+> **Note:** If you want to follow along, here's the sample app I used for this post: [MVVMSampleApp](https://github.com/MingHieu/MVVMSampleApp)
 
 I've heard it a hundred times. In code reviews. In stand-ups. In those annoying Slack threads where someone drops a PR comment that says *"this could be cleaner"* with zero follow-up.
 
@@ -81,7 +83,6 @@ The beauty of this separation? If you ever need to swap Alamofire for URLSession
 ```
 
 The UI never talks to the Data layer directly. There's always a middleman — the Business layer — that decides what to do with the information.
-
 
 ## MVVM meets Clean Architecture
 

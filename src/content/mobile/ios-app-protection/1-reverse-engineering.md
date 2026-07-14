@@ -8,7 +8,7 @@ category: "mobile"
 
 I’ve always been addicted to gaming. When I was a kid, offline games were my life. But you know what was even more fun? **Game-mods.** Being able to change the rules, get infinite health, or unlock every level—that was pure magic.
 
-So when I started looking into app security, a terrifying thought hit me: **"Can hackers 'mod' our app the same way?"**
+So when I started looking into app security, a terrifying thought hit me: "Can hackers 'mod' our app the same way?"
 
 Could someone just reverse our app, see our code, change the logic (like making `isPaid` always return `true`), and then package it into a brand-new "app-mod"? Hahaha, the thought was actually keeping me awake at night.
 
@@ -16,13 +16,13 @@ I started digging and found a tool that felt like a cheat code: **Hopper Disasse
 
 ![Swift function in Xcode](/blog/images/practical-guide-to-ios-app-protection/Xcode.png)
 
-I built the app, grabbed the binary, and dropped it into Hopper. **What happened next blew my mind.**
+I built the app, grabbed the binary, and dropped it into Hopper. What happened next blew my mind.
 
 Everything was there. My code wasn't a "secret" anymore. I could clearly see the `isPaid()` function in the list of symbols. Hopper even turned the assembly back into something I could almost read.
 
 ![Binary reversed in Hopper](/blog/images/practical-guide-to-ios-app-protection/Hopper.png)
 
-That was when it hit me: **If they can see it, they can change it.** 
+That was when it hit me: If they can see it, they can change it.
 
 If a hacker can see exactly where my security checks are, they can just flip a single bit—changing a `false` to a `true`—and my entire security system collapses. And if they can do that, they can definitely build a "modded" version of our app that bypasses every check we have.
 
@@ -32,7 +32,7 @@ If a hacker can see exactly where my security checks are, they can just flip a s
 
 #### Symbol Obfuscation
 
-If you have a super-important function like `isPaid()`, **stop giving them obvious names!** Rename your functions and classes to something random like `a1b2c3d4()`. You can keep your sanity by adding a comment in your source code explaining what the function actually does. Comments are stripped out during the build process, so the hacker will only see the random gibberish. Hahaha!
+If you have a super-important function like `isPaid()`, stop giving them obvious names! Rename your functions and classes to something random like `a1b2c3d4()`. You can keep your sanity by adding a comment in your source code explaining what the function actually does. Comments are stripped out during the build process, so the hacker will only see the random gibberish. Hahaha!
 
 ```swift
 // MARK: - Payment Check (Symbol Obfuscated)

@@ -12,7 +12,7 @@ I used to think that once my app sent a request to the server, it was "safe." I 
 
 One day, I saw a colleague using a tool called **Proxyman**. I watched him open our app, hit a button, and—*boom*—every single request, every API key, every JSON response was right there on his screen.
 
-But it got worse. He didn't just *see* the data. He set a **breakpoint** on a response from our server. When the app asked, `"Is this user a VIP?"`, the server responded with `{"isVIP": false}`. My colleague paused the response on his computer, changed the `false` to `true` in real-time, and hit "Execute."
+But it got worse. He didn't just *see* the data. He set a breakpoint on a response from our server. When the app asked, `"Is this user a VIP?"`, the server responded with `{"isVIP": false}`. My colleague paused the response on his computer, changed the `false` to `true` in real-time, and hit "Execute."
 
 The app received the "fake" response, and suddenly, he had access to every premium feature in the app. No purchase, no subscription, just a quick edit in Proxyman.
 
@@ -126,9 +126,11 @@ func encryptBody(data: Data) -> Data? {
 ```
 
 ### Overall
-If you really want to sleep at night, don't just pick one. 
+
+If you really want to sleep at night, don't just pick one.
+
 1. Use **Proxy Detection** to scare off the amateurs.
 2. Use **SSL Pinning** to stop the tools from working.
-3. Use **Encryption & Signing** as the ultimate backup. 
+3. Use **Encryption & Signing** as the ultimate backup.
 
 Next up: Checking if your code is still... your code.

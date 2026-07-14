@@ -1,238 +1,263 @@
 ---
-import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { normalizeWord } from '../common/string';
+import Layout from '../layouts/Layout.astro';
 
 const allChapters = await getCollection('mobile');
 
 const postsMap = allChapters.reduce((acc, chapter) => {
-	const parts = chapter.id.split('/');
-	if (parts.length < 2) return acc;
-	
-	const postId = parts[0];
-	if (!acc[postId]) {
-		acc[postId] = {
-			id: postId,
-			chapters: [],
-			title: '',
-			category: chapter.data.category || 'other'
-		};
-	}
-	acc[postId].chapters.push(chapter);
-	return acc;
+  const parts = chapter.id.split('/');
+  if (parts.length < 2) return acc;
+
+  const postId = parts[0];
+  if (!acc[postId]) {
+    acc[postId] = {
+      id: postId,
+      chapters: [],
+      title: '',
+      category: chapter.data.category || 'other',
+    };
+  }
+  acc[postId].chapters.push(chapter);
+  return acc;
 }, {});
 
-const processedPosts = Object.values(postsMap).map(post => {
-	post.chapters.sort((a, b) => a.data.order - b.data.order);
-	const firstChapter = post.chapters[0];
-	
-	const isSeries = post.chapters.length > 1;
-	const displayTitle = isSeries
-		? post.id
-			.split('-')
-			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ')
-		: (firstChapter?.data.title || '');
+const processedPosts = Object.values(postsMap).map((post) => {
+  post.chapters.sort((a, b) => a.data.order - b.data.order);
+  const firstChapter = post.chapters[0];
+  const isSeries = post.chapters.length > 1;
 
-	return {
-		...post,
-		isSeries,
-		title: displayTitle,
-		description: firstChapter?.data.description || '',
-		firstChapterSlug: isSeries ? (firstChapter?.id || '') : post.id
-	};
+  return {
+    ...post,
+    isSeries,
+    title: firstChapter?.data.title || '',
+    description: firstChapter?.data.description || '',
+    firstChapterSlug: isSeries ? firstChapter?.id || '' : post.id,
+  };
 });
 
 const categories = processedPosts.reduce((acc, post) => {
-	const cat = post.category || 'other';
-	if (!acc[cat]) acc[cat] = [];
-	acc[cat].push(post);
-	return acc;
+  const cat = post.category || 'other';
+  if (!acc[cat]) acc[cat] = [];
+  acc[cat].push(post);
+  return acc;
 }, {});
 
-const categoryOrder = ['mobile', 'web', 'backend', 'security', 'ai', 'systems', 'other'];
+const categoryOrder = [
+  'mobile',
+  'web',
+  'backend',
+  'security',
+  'ai',
+  'systems',
+  'other',
+];
 const sortedCategories = Object.keys(categories).sort((a, b) => {
-	const idxA = categoryOrder.indexOf(a);
-	const idxB = categoryOrder.indexOf(b);
-	return (idxA > -1 ? idxA : 99) - (idxB > -1 ? idxB : 99);
+  const idxA = categoryOrder.indexOf(a);
+  const idxB = categoryOrder.indexOf(b);
+  return (idxA > -1 ? idxA : 99) - (idxB > -1 ? idxB : 99);
 });
 ---
 
-<Layout title="MH / LAB" description="Technical explorations in software engineering, systems, and security.">
-	<div class="categories-container">
-		{sortedCategories.map(cat => (
-			<section class="category-section">
-				<div class="category-header-row">
-					<h2 class="category-title">{cat}</h2>
-					<a href={`${import.meta.env.BASE_URL}/category/${cat}`} class="view-all-link">
-						View All <span class="arrow">&rarr;</span>
-					</a>
-				</div>
-				<div class="posts-list">
-					{categories[cat].slice(0, 2).map(post => (
-						<div class="post-row">
-							<div class="post-info">
-								<h3>
-									<a href={`${import.meta.env.BASE_URL}/mobile/${post.firstChapterSlug}`}>{post.title}</a>
-								</h3>
-								<p>{post.description}</p>
-							</div>
-							{post.isSeries && (
-								<div class="post-meta">
-									<span class="chapter-count">{post.chapters.length} articles</span>
-								</div>
-							)}
-						</div>
-					))}
-				</div>
-			</section>
-		))}
-	</div>
+<Layout
+  title="MH / LAB"
+  description="Technical explorations in software engineering, systems, and security."
+>
+  <div class="categories-container">
+    {
+      sortedCategories.map((cat) => (
+        <section class="category-section">
+          <div class="category-header-row">
+            <h2 class="category-title">{cat}</h2>
+            <a
+              href={`${import.meta.env.BASE_URL}/category/${cat}`}
+              class="view-all-link"
+            >
+              View All <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+          <div class="posts-list">
+            {categories[cat].slice(0, 3).map((post) => (
+              <a
+                class="post-row"
+                href={`${import.meta.env.BASE_URL}/mobile/${post.firstChapterSlug}`}
+              >
+                <div class="post-info">
+                  <h3>{post.title}</h3>
+                  <p>{post.description}</p>
+                </div>
+                {post.isSeries && (
+                  <div class="post-meta">
+                    <span class="chapter-count">
+                      {post.chapters.length} articles
+                    </span>
+                  </div>
+                )}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
 </Layout>
 
 <style>
-	.intro {
-		margin-bottom: 6rem;
-	}
+  .intro {
+    margin-bottom: 6rem;
+  }
 
-	h1 {
-		font-size: 3.5rem;
-		margin-bottom: 0.5rem;
-		font-weight: 700;
-		letter-spacing: -0.03em;
-	}
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
 
-	.sub {
-		font-size: 1.1rem;
-		color: var(--text-dim);
-		font-family: 'JetBrains Mono', monospace;
-	}
+  .sub {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-	.text-gradient {
-		color: var(--accent);
-	}
+  .text-gradient {
+    color: var(--accent);
+  }
 
-	.category-section {
-		margin-bottom: 6rem;
-	}
+  .category-section {
+    margin-bottom: 6rem;
+  }
 
-	.category-header-row {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		border-bottom: 2px solid var(--border-color);
-		padding-bottom: 0.75rem;
-		margin-bottom: 2.5rem;
-	}
+  .category-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
 
-	.category-title {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.85rem;
-		text-transform: uppercase;
-		letter-spacing: 0.15em;
-		color: var(--accent);
-		margin-bottom: 0;
-		font-weight: 700;
-		border-bottom: none;
-	}
+  .category-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0;
+    font-weight: 700;
+    border-bottom: none;
+  }
 
-	.view-all-link {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.85rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--text-dim);
-		text-decoration: none;
-		font-weight: 700;
-		transition: color 0.2s ease;
-		display: inline-flex;
-		align-items: center;
-	}
+  .view-all-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+  }
 
-	.view-all-link:hover {
-		color: var(--accent);
-	}
+  .view-all-link:hover {
+    color: var(--accent);
+  }
 
-	.view-all-link .arrow {
-		margin-left: 0.4rem;
-		transition: transform 0.2s ease;
-	}
+  .view-all-link .arrow {
+    margin-left: 0.4rem;
+    transition: transform 0.2s ease;
+  }
 
-	.view-all-link:hover .arrow {
-		transform: translateX(4px);
-	}
+  .view-all-link:hover .arrow {
+    transform: translateX(4px);
+  }
 
-	.posts-list {
-		display: flex;
-		flex-direction: column;
-	}
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+  }
 
-	.post-row {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		padding: 2.5rem 0;
-		border-bottom: 1px solid var(--border-color);
-		transition: transform 0.2s ease;
-	}
+  .post-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    transition: transform 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+  }
 
-	.post-row:hover {
-		transform: translateX(10px);
-	}
+  .post-row:hover {
+    transform: translateX(10px);
+    text-decoration: none;
+  }
 
-	.post-row:last-child {
-		border-bottom: none;
-	}
+  .post-row:last-child {
+    border-bottom: none;
+  }
 
-	.post-info h3 {
-		margin: 0 0 0.75rem;
-		font-size: 1.8rem;
-		font-weight: 700;
-	}
+  .post-info h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+    transition: color 0.2s ease;
+  }
 
-	.post-info h3 a {
-		text-decoration: none;
-		color: var(--text-color);
-		transition: color 0.2s;
-	}
+  .post-row:hover .post-info h3 {
+    color: var(--accent);
+  }
 
-	.post-info h3 a:hover {
-		color: var(--accent);
-	}
+  .post-info p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
 
-	.post-info p {
-		font-size: 1.1rem;
-		color: var(--text-dim);
-		margin-bottom: 0;
-		max-width: 550px;
-		line-height: 1.6;
-	}
+  .post-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-align: right;
+    padding-top: 0.8rem;
+    font-weight: 600;
+  }
 
-	.post-meta {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-align: right;
-		padding-top: 0.8rem;
-		font-weight: 600;
-	}
+  .empty-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
 
-	.empty-note {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.8rem;
-		color: var(--text-dim);
-		font-style: italic;
-	}
+  .empty {
+    opacity: 0.5;
+  }
 
-	.empty {
-		opacity: 0.5;
-	}
-
-	@media (max-width: 768px) {
-		.intro { margin-bottom: 4rem; }
-		.post-row { flex-direction: column; }
-		.post-row:hover { transform: none; }
-		.post-meta { text-align: left; margin-top: 1rem; }
-		h1 { font-size: 2.75rem; }
-		.post-info h3 { font-size: 1.6rem; }
-	}
+  @media (max-width: 768px) {
+    .intro {
+      margin-bottom: 4rem;
+    }
+    .post-row {
+      flex-direction: column;
+    }
+    .post-row:hover {
+      transform: none;
+    }
+    .post-meta {
+      text-align: left;
+      margin-top: 1rem;
+    }
+    h1 {
+      font-size: 2.75rem;
+    }
+    .post-info h3 {
+      font-size: 1.6rem;
+    }
+  }
 </style>
